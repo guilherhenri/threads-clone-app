@@ -1,10 +1,8 @@
 'use client'
 
-import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
-import Image from 'next/image'
 import { usePathname, useRouter } from 'next/navigation'
 
 import { Button } from '@/components/ui/button'
@@ -19,18 +17,6 @@ import {
 import { Textarea } from '../ui/textarea'
 import { ThreadValidation } from '@/lib/validations/thread'
 import { createThread } from '@/lib/actions/thread.actions'
-
-interface Props {
-  user: {
-    id: string
-    objectId: string
-    username: string
-    name: string
-    bio: string
-    image: string
-  }
-  btnTitle: string
-}
 
 const PostThread = ({ userId }: { userId: string }) => {
   const router = useRouter()
