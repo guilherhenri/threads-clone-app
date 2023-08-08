@@ -5,6 +5,7 @@ import { revalidatePath } from 'next/cache'
 import User from '../models/user.model'
 import { connectToDB } from '../mongoose'
 import { Error } from 'mongoose'
+import Thread from '../models/thread.model'
 
 interface UpdateUserParams {
   userId: string
@@ -47,11 +48,35 @@ export async function updateUser({
 }
 
 export async function fetchUser(userId: string) {
-  try {
-    connectToDB()
+  connectToDB()
 
+  try {
     return await User.findOne({ id: userId })
   } catch (error: any) {
     throw new Error(`Failed to fetch user: ${error.message}`)
+  }
+}
+
+export async function fetchUserPosts(userId: string) {
+  connectToDB()
+
+  try {
+    const threads = await User.findOne({ id: userId }).populate({
+      path: 'threads',
+      model: Thread,
+      populate: {
+        path: 'children',
+        model: Thread,
+        populate: {
+          path: 'author',
+          model: User,
+          select: 'id name image',
+        },
+      },
+    })
+
+    return threads
+  } catch (error: any) {
+    throw new Error(`Error fetching user posts ${error.message}`)
   }
 }
