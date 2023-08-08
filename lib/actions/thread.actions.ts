@@ -1,3 +1,5 @@
+'use server'
+
 import { revalidatePath } from 'next/cache'
 
 import Thread from '../models/thread.model'
@@ -17,17 +19,21 @@ export async function createThread({
   communityId,
   path,
 }: CreateThreadParams) {
-  connectToDB()
+  try {
+    connectToDB()
 
-  const thread = await Thread.create({
-    text,
-    author,
-    community: null,
-  })
+    const thread = await Thread.create({
+      text,
+      author,
+      community: null,
+    })
 
-  await User.findByIdAndUpdate(author, {
-    $push: { threads: thread._id },
-  })
+    await User.findByIdAndUpdate(author, {
+      $push: { threads: thread._id },
+    })
 
-  revalidatePath(path)
+    revalidatePath(path)
+  } catch (error: any) {
+    throw new Error(`Error creating thread: ${error.message}`)
+  }
 }
