@@ -6,14 +6,23 @@ import User from '../models/user.model'
 import { connectToDB } from '../mongoose'
 import { Error } from 'mongoose'
 
-export async function updateUser(
-  userId: string,
-  username: string,
-  name: string,
-  bio: string,
-  image: string,
-  path: string,
-): Promise<void> {
+interface UpdateUserParams {
+  userId: string
+  username: string
+  name: string
+  bio: string
+  image: string
+  path: string
+}
+
+export async function updateUser({
+  userId,
+  username,
+  name,
+  bio,
+  image,
+  path,
+}: UpdateUserParams): Promise<void> {
   connectToDB()
 
   try {
